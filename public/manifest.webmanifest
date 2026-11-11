@@ -1,0 +1,17 @@
+{
+  "name": "PYT — Plan Your Travel",
+  "short_name": "PYT",
+  "description": "Plan Your Travel: plan every day of your trip, then map where you go with photos, food log, costs and ratings.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1d1b16",
+  "theme_color": "#F4F1EA",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
