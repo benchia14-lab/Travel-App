@@ -85,6 +85,8 @@ export function EntrySheet({
       address: p.address,
       lat: p.lat,
       lng: p.lng,
+      area: p.area ?? prev.area,
+      country: p.country ?? prev.country,
       title: prev.title || p.name,
     }));
     setQ(p.name);
@@ -291,6 +293,21 @@ export function EntrySheet({
           />
         )}
       </section>
+
+      <div className="grid2">
+        <section className="field">
+          <label className="field__label" htmlFor="area">
+            Area / city
+          </label>
+          <input id="area" className="input" placeholder="e.g. Sintra" value={e.area ?? ''} onChange={(ev) => set('area', ev.target.value || undefined)} />
+        </section>
+        <section className="field">
+          <label className="field__label" htmlFor="country">
+            Country
+          </label>
+          <input id="country" className="input" placeholder="e.g. Portugal" value={e.country ?? ''} onChange={(ev) => set('country', ev.target.value || undefined)} />
+        </section>
+      </div>
 
       <div className="grid2">
         <section className="field">

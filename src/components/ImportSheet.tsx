@@ -16,6 +16,8 @@ interface Group {
   category: Category;
   include: boolean;
   name?: string;
+  area?: string;
+  country?: string;
 }
 
 /**
@@ -51,7 +53,7 @@ export function ImportSheet({ trip, onClose }: { trip: Trip; onClose: () => void
       setProgress({ done: i, total: gs.length, label: 'Finding places' });
       const m = gs[i].items[0];
       const p = await reverseGeocode({ lat: m.lat!, lng: m.lng! });
-      setGroups((prev) => prev.map((g) => (g.key === gs[i].key ? { ...g, name: p?.name ?? '' } : g)));
+      setGroups((prev) => prev.map((g) => (g.key === gs[i].key ? { ...g, name: p?.name ?? '', area: p?.area, country: p?.country } : g)));
       if (i < gs.length - 1) await new Promise((r) => setTimeout(r, 1100));
     }
     setProgress(null);
@@ -68,6 +70,8 @@ export function ImportSheet({ trip, onClose }: { trip: Trip; onClose: () => void
         category: g.category,
         title: g.name || 'Photo stop',
         placeName: g.name || '',
+        area: g.area,
+        country: g.country,
         lat: first.lat,
         lng: first.lng,
         datetime: first.takenAt ?? `${trip.startDate}T12:00`,

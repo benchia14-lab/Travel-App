@@ -24,36 +24,49 @@ export interface Place {
   address: string;
   lat: number;
   lng: number;
+  area?: string;
+  country?: string;
+}
+
+type NominatimAddress = Record<string, string | undefined>;
+
+function areaOf(a?: NominatimAddress) {
+  if (!a) return {};
+  return {
+    area: a.city ?? a.town ?? a.village ?? a.municipality ?? a.suburb ?? a.county ?? a.state,
+    country: a.country,
+  };
 }
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org';
 
 export async function searchPlaces(q: string, near?: LatLng): Promise<Place[]> {
   if (!q.trim()) return [];
-  const params = new URLSearchParams({ q, format: 'jsonv2', limit: '6', addressdetails: '0' });
+  const params = new URLSearchParams({ q, format: 'jsonv2', limit: '6', addressdetails: '1' });
   if (near) {
     const d = 0.6;
     params.set('viewbox', `${near.lng - d},${near.lat + d},${near.lng + d},${near.lat - d}`);
   }
   const r = await fetch(`${NOMINATIM}/search?${params}`, { headers: { Accept: 'application/json' } });
   if (!r.ok) return [];
-  const rows: { name?: string; display_name: string; lat: string; lon: string }[] = await r.json();
+  const rows: { name?: string; display_name: string; lat: string; lon: string; address?: NominatimAddress }[] = await r.json();
   return rows.map((x) => ({
     name: x.name || x.display_name.split(',')[0],
     address: x.display_name,
     lat: +x.lat,
     lng: +x.lon,
+    ...areaOf(x.address),
   }));
 }
 
 export async function reverseGeocode(p: LatLng): Promise<Place | null> {
   try {
-    const params = new URLSearchParams({ lat: String(p.lat), lon: String(p.lng), format: 'jsonv2', zoom: '18' });
+    const params = new URLSearchParams({ lat: String(p.lat), lon: String(p.lng), format: 'jsonv2', zoom: '18', addressdetails: '1' });
     const r = await fetch(`${NOMINATIM}/reverse?${params}`, { headers: { Accept: 'application/json' } });
     if (!r.ok) return null;
-    const x: { name?: string; display_name?: string } = await r.json();
+    const x: { name?: string; display_name?: string; address?: NominatimAddress } = await r.json();
     if (!x.display_name) return null;
-    return { name: x.name || x.display_name.split(',')[0], address: x.display_name, lat: p.lat, lng: p.lng };
+    return { name: x.name || x.display_name.split(',')[0], address: x.display_name, lat: p.lat, lng: p.lng, ...areaOf(x.address) };
   } catch {
     return null;
   }
@@ -94,4 +107,19 @@ export function clusterByPlace<T extends { lat?: number; lng?: number; takenAt?:
     else groups.push([it]);
   }
   return groups;
+}
+
+export type GroupBy = 'none' | 'country' | 'area';
+
+/** The country / area a place belongs to, falling back to its address text. */
+export function groupKey(e: { area?: string; country?: string; address?: string }, by: GroupBy) {
+  const parts = (e.address ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  const country = e.country?.trim() || (parts.length > 1 ? parts[parts.length - 1] : '');
+  if (by === 'country') return country || 'Other places';
+  if (by === 'area') {
+    const area = e.area?.trim();
+    if (area) return country ? `${area}, ${country}` : area;
+    return country ? `Elsewhere in ${country}` : 'Other places';
+  }
+  return '';
 }

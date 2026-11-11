@@ -397,17 +397,19 @@ export async function renderStopPoster(
   } else if (bmps[0]) cover(ctx, bmps[0], M, M, W - M * 2, photoH, 32);
   else placeholder(ctx, M, M, W - M * 2, photoH, 32, t.line);
 
-  // index chip
-  ctx.save();
-  ctx.font = `600 22px ${SANS}`;
-  const chip = `${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-  const cw = ctx.measureText(chip).width + 40;
-  roundRect(ctx, M + 28, M + 28, cw, 48, 24);
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fill();
-  ctx.fillStyle = '#fff';
-  ctx.fillText(chip, M + 48, M + 60);
-  ctx.restore();
+  // index chip (only when the card is part of a set)
+  if (total > 1) {
+    ctx.save();
+    ctx.font = `600 22px ${SANS}`;
+    const chip = `${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+    const cw = ctx.measureText(chip).width + 40;
+    roundRect(ctx, M + 28, M + 28, cw, 48, 24);
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.fillText(chip, M + 48, M + 60);
+    ctx.restore();
+  }
 
   let y = M + photoH + 70;
   // category dot + label

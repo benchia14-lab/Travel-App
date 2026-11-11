@@ -102,7 +102,7 @@ export async function loadSample(): Promise<string> {
   let seed = 1;
   for (const [category, title, placeName, lat, lng, datetime, cost, rating, notes, dishes, pal, nPhotos] of S) {
     const id = uid();
-    entries.push({ id, tripId, category, title, placeName, address: `${placeName}, Lisboa`, lat, lng, datetime, cost, rating, notes, dishes, tags: [], wouldReturn: rating >= 4.5, createdAt: Date.now(), updatedAt: Date.now() });
+    entries.push({ id, tripId, category, title, placeName, address: `${placeName}, ${lng < -9.3 ? 'Sintra' : 'Lisboa'}, Portugal`, area: lng < -9.3 ? 'Sintra' : 'Lisbon', country: 'Portugal', lat, lng, datetime, cost, rating, notes, dishes, tags: [], wouldReturn: rating >= 4.5, createdAt: Date.now(), updatedAt: Date.now() });
     for (let i = 0; i < nPhotos; i++) {
       const blob = await paint(seed++, PAL[pal]);
       media.push({ id: uid(), tripId, entryId: id, kind: 'image', blob, thumb: await thumbOf(blob), width: 1600, height: 1200, lat, lng, takenAt: datetime, fileName: `${title}-${i + 1}.jpg`, createdAt: Date.now() });

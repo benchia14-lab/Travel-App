@@ -10,13 +10,13 @@ It's an installable web app (PWA), so one codebase runs on **iPhone, iPad, Andro
 | --- | --- |
 | **Map & route** | Every stop is pinned, numbered and colour-coded by category. A dotted line joins the stops in order, and the app totals the distance travelled. On desktop the journal has a live map beside it. |
 | **Photo geolocation** | **Import photos** reads the GPS position and capture time from each photo's EXIF data, groups photos taken at the same place and time into stops, and looks up the place name. Adding a photo to a stop fills in its location and time. |
-| **Location capture** | Search for a place (OpenStreetMap), use your current location, or tap the map. |
+| **Location capture** | Search for a place (OpenStreetMap), use your current location, or tap the map. Each place's area (city/town) and country fill in automatically and can be edited. |
 | **Food log** | Restaurants with the dishes and drinks you ordered, a price and star rating for each dish, the bill total and a "would go back" flag. |
 | **Attractions & activities** | Each one has tickets/costs, ratings, notes and tags. You can sort by date, rating or cost. |
 | **Ratings** | A half-star rating for every location and every dish, plus an overall rating for the trip. |
 | **Spend** | Total and per-day spend, a budget progress bar, a breakdown by category and by day, and a CSV export. |
 | **Print journal** | An A4 layout with a cover, summary, spend table, route map and one page per day. Use **Print / Save PDF**. You can turn photos, costs, the map and notes on or off. |
-| **Share studio** | A trip recap poster, or a card for each location, in Post 4:5, Story 9:16 or Square 1:1, with Ivory or Noir themes. You can hide prices. On a phone, **Share** opens the native share sheet so you can post straight to Instagram or TikTok. You can also export every location at once as a carousel. |
+| **Share studio** | A trip recap poster, or a card for each location, in Post 4:5, Story 9:16 or Square 1:1, with Ivory or Noir themes. You can hide prices. On a phone, **Share** opens the native share sheet so you can post straight to Instagram or TikTok. Tick the places to include, export a single place on its own, or group places by country or area and export one group at a time (its place cards, or a recap of just that area). |
 | **Gallery** | Every photo and video from the trip. You can attach items to a stop, set the trip cover or delete items. |
 | **Backup** | A single-file export and restore, for moving trips between your phone, iPad and laptop. |
 

@@ -1785,6 +1785,111 @@ textarea.input {
   gap: 12px;
 }
 
+.picker__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.picker__head .field__label {
+  margin: 0;
+}
+.link-btn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  padding: 2px 4px;
+}
+.link-btn:disabled {
+  color: var(--muted);
+  opacity: 0.6;
+}
+.picker__group + .picker__group {
+  margin-top: 10px;
+}
+.picker__ghead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px 6px 10px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 4px;
+}
+.picker__ghead strong small {
+  font-family: var(--sans);
+  font-size: 12px;
+}
+.picker__ghead strong {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.picker {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.picker__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 10px;
+  border-radius: 12px;
+}
+.picker__row.cur {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.picker__row.off .picker__main {
+  opacity: 0.45;
+}
+.picker__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 2px 0;
+}
+.picker__thumb {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+}
+.picker__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.picker__text {
+  display: grid;
+  min-width: 0;
+}
+.picker__text strong {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.picker__text small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
 /* ───────── Print journal ───────── */
 .print-wrap {
   background: var(--surface-2);

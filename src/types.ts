@@ -35,6 +35,8 @@ export interface Entry {
   title: string;
   placeName: string;
   address?: string;
+  area?: string; // city / town, used to group places
+  country?: string;
   lat?: number;
   lng?: number;
   datetime: string; // ISO local yyyy-mm-ddThh:mm
