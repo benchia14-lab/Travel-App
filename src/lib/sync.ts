@@ -308,6 +308,11 @@ export async function startSync(uid: string): Promise<number> {
   let adopted = 0;
   if (owner && owner !== uid) {
     await wipeLocal();
+  } else if (owner === uid && (await db.trips.count()) === 0) {
+    // Local data was cleared (e.g. browser storage wiped) but the sync bookmark survived:
+    // start the download from the beginning so everything comes back.
+    ls.del(cursorKey(uid));
+    uploaded.clear();
   } else if (!owner) {
     const t = tables();
     for (const kind of KINDS) {

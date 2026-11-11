@@ -142,9 +142,16 @@ export function PlanView({
             <Icon name="list" size={15} /> Day by day
           </button>
         </div>
-        <button className="btn btn--primary btn--sm" onClick={addLeg}>
-          <Icon name="plus" size={16} /> Add location
-        </button>
+        <span className="row">
+          {legs.length > 0 && (
+            <button className="btn btn--ghost btn--sm" onClick={() => nav(`/trip/${trip.id}/plan/print`)}>
+              <Icon name="download" size={16} /> Export PDF
+            </button>
+          )}
+          <button className="btn btn--primary btn--sm" onClick={addLeg}>
+            <Icon name="plus" size={16} /> Add location
+          </button>
+        </span>
       </div>
 
       {legs.length === 0 ? (

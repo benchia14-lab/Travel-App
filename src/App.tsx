@@ -8,6 +8,7 @@ import { SharePage } from './pages/SharePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { LocationPage } from './pages/LocationPage';
 import { AdminPage } from './pages/AdminPage';
+import { PlanPrintPage } from './pages/PlanPrintPage';
 import { AuthGate } from './components/AuthGate';
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="trip/:id" element={<TripPage />} />
             <Route path="trip/:id/place/:legId" element={<LocationPage />} />
             <Route path="trip/:id/print" element={<PrintPage />} />
+            <Route path="trip/:id/plan/print" element={<PlanPrintPage />} />
             <Route path="trip/:id/share" element={<SharePage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="admin" element={<AdminPage />} />
