@@ -219,7 +219,7 @@ function footer(ctx: CanvasRenderingContext2D, W: number, H: number, t: (typeof 
   ctx.font = `600 22px ${SANS}`;
   ctx.textAlign = 'right';
   ctx.letterSpacing = '4px';
-  ctx.fillText('WAYFARE', W - 72, H - 56);
+  ctx.fillText('PYT · PLAN YOUR TRAVEL', W - 72, H - 56);
   ctx.letterSpacing = '0px';
   ctx.textAlign = 'left';
 }

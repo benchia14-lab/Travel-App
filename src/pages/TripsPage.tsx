@@ -82,7 +82,7 @@ export function TripsPage() {
             <Icon name="route" size={40} />
           </div>
           <h2>Start your first journey</h2>
-          <p>Create a trip, then snap photos as you go — Wayfare pins them on the map, logs meals and costs, and turns it all into a printable journal and shareable posters.</p>
+          <p>Create a trip, then snap photos as you go — PYT pins them on the map, logs meals and costs, and turns it all into a printable journal and shareable posters.</p>
           <div className="row">
             <button className="btn btn--primary" onClick={() => setCreating(true)}>
               <Icon name="plus" size={18} /> Create a trip

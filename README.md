@@ -1,6 +1,6 @@
-# Wayfare — premium travel journal
+# PYT — Plan Your Travel
 
-Wayfare tracks everywhere you go on a trip: the places on a map, photos and videos, a food log, attractions and activities, costs and ratings. It turns a trip into a printable journal and into posters sized for Instagram, TikTok and Stories.
+PYT (Plan Your Travel) plans and tracks everywhere you go on a trip: the places on a map, photos and videos, a food log, attractions and activities, costs and ratings. It turns a trip into a printable journal and into posters sized for Instagram, TikTok and Stories.
 
 It's an installable web app (PWA), so one codebase runs on **iPhone, iPad, Android and laptop**, full-screen and offline.
 
@@ -23,7 +23,7 @@ It's an installable web app (PWA), so one codebase runs on **iPhone, iPad, Andro
 
 ## Free and open
 
-Wayfare has no subscription, paywall or usage limits. Every feature is available to everyone: unlimited trips, photos and videos, the print journal, posters without a watermark, and carousel export.
+PYT has no subscription, paywall or usage limits. Every feature is available to everyone: unlimited trips, photos and videos, the print journal, posters without a watermark, and carousel export.
 
 ## Accounts & data
 

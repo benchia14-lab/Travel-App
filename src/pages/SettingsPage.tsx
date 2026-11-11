@@ -31,7 +31,7 @@ export function SettingsPage() {
   useEffect(() => {
     (async () => {
       const est = await navigator.storage?.estimate?.();
-      if (est?.quota) setQuota(`${(est.quota / 1e9).toFixed(1)} GB available to Wayfare on this device.`);
+      if (est?.quota) setQuota(`${(est.quota / 1e9).toFixed(1)} GB available to PYT on this device.`);
       await navigator.storage?.persist?.();
     })().catch(() => {});
   }, []);
@@ -150,7 +150,7 @@ export function SettingsPage() {
       <div className="panel">
         <h2 className="h3">Install the app</h2>
         <p className="muted small">
-          On iPhone or iPad: open in Safari → Share → <em>Add to Home Screen</em>. On Android or desktop Chrome/Edge: use <em>Install app</em> in the browser menu. Wayfare then works full-screen and offline.
+          On iPhone or iPad: open in Safari → Share → <em>Add to Home Screen</em>. On Android or desktop Chrome/Edge: use <em>Install app</em> in the browser menu. PYT then works full-screen and offline.
         </p>
       </div>
     </div>

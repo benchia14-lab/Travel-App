@@ -1,7 +1,7 @@
 // Offline shell: cache-first for app assets, network-first for navigation,
 // stale-while-revalidate for map tiles and fonts.
-const VERSION = 'wayfare-v1';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+const VERSION = 'pyt-v2';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

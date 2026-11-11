@@ -23,7 +23,7 @@ export async function exportBackup() {
   const file = new Blob(parts, { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(file);
-  a.download = `wayfare-backup-${new Date().toISOString().slice(0, 10)}.wayfare`;
+  a.download = `pyt-backup-${new Date().toISOString().slice(0, 10)}.wayfare`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }

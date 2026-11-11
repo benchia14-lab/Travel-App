@@ -63,7 +63,7 @@ function AuthScreen({ restoreError }: { restoreError?: string }) {
   return (
     <div className="auth">
       <form className="auth__card" onSubmit={submit}>
-        <Logo />
+        <Logo size={56} />
         <h1 className="display">{mode === 'signin' ? 'Welcome back' : 'Create your account'}</h1>
         <p className="muted">
           {mode === 'signin'
@@ -119,7 +119,7 @@ function AuthScreen({ restoreError }: { restoreError?: string }) {
           {busy ? <span className="spinner" /> : mode === 'signin' ? 'Sign in' : 'Create account'}
         </button>
         <p className="auth__switch">
-          {mode === 'signin' ? 'New to Wayfare?' : 'Already have an account?'}{' '}
+          {mode === 'signin' ? 'New to PYT?' : 'Already have an account?'}{' '}
           <button
             type="button"
             className="link-btn"

@@ -3,14 +3,14 @@ import { Icon } from './Icon';
 import { useAccount } from '../lib/account';
 import { useSyncStatus } from '../lib/sync';
 
-export function Logo() {
+export function Logo({ size = 34 }: { size?: number }) {
   return (
     <span className="logo">
-      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden>
-        <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M8 11l4 11 4-8 4 8 4-11" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      <span>Wayfare</span>
+      <img src="./icon.svg" width={size} height={size} alt="" className="logo__mark" />
+      <span className="logo__word">
+        PYT
+        <small>Plan Your Travel</small>
+      </span>
     </span>
   );
 }
