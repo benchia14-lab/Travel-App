@@ -28,6 +28,7 @@ const P: Record<string, string> = {
   sparkle: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z',
   lock: 'M6 11h12v9H6v-9Zm2 0V8a4 4 0 0 1 8 0v3',
   more: 'M5 12h.01M12 12h.01M19 12h.01',
+  copy: 'M9 9h11v11H9V9Zm-5 6V4h11',
 };
 
 export function Icon({ name, size = 20, className }: { name: keyof typeof P | string; size?: number; className?: string }) {

@@ -11,6 +11,7 @@ import { TripMap } from '../components/TripMap';
 import { EntryCard } from '../components/EntryCard';
 import { EntrySheet, blankEntry, type EntryPreset } from '../components/EntrySheet';
 import { PlanView } from '../components/PlanView';
+import { CloneSheet } from '../components/CloneSheet';
 import { toLocalISO } from '../lib/media';
 import { TripForm } from '../components/TripForm';
 import { ImportSheet } from '../components/ImportSheet';
@@ -35,6 +36,7 @@ export function TripPage() {
   const requested = params.get('tab') as Tab | null;
   const [editing, setEditing] = useState<{ entry: Entry; isNew: boolean } | null>(null);
   const [editTrip, setEditTrip] = useState(false);
+  const [cloning, setCloning] = useState(false);
   const [importing, setImporting] = useState(false);
   const [viewer, setViewer] = useState<{ items: Media[]; start: Media } | null>(null);
   const [active, setActive] = useState<string>();
@@ -67,6 +69,9 @@ export function TripPage() {
             <Icon name="back" />
           </Link>
           <div className="row">
+            <button className="icon-btn icon-btn--glass" onClick={() => setCloning(true)} aria-label="Clone this plan" title="Clone this plan">
+              <Icon name="copy" />
+            </button>
             <button className="icon-btn icon-btn--glass" onClick={() => setEditTrip(true)} aria-label="Edit trip">
               <Icon name="edit" />
             </button>
@@ -204,6 +209,7 @@ export function TripPage() {
         />
       )}
       {editTrip && <TripForm trip={trip} onClose={() => setEditTrip(false)} />}
+      {cloning && <CloneSheet data={data} onClose={() => setCloning(false)} />}
       {importing && <ImportSheet trip={trip} onClose={() => setImporting(false)} />}
       {viewer && <Lightbox items={viewer.items} start={viewer.start} entries={entries} coverId={trip.coverMediaId} onClose={() => setViewer(null)} />}
     </div>

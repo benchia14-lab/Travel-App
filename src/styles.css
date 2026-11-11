@@ -2548,6 +2548,47 @@ textarea.input {
   padding: 0 14px 14px;
 }
 
+.choice-list {
+  display: grid;
+  gap: 8px;
+}
+.choice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+}
+.choice.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.choice.off {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.choice input {
+  margin-top: 3px;
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.choice span {
+  display: grid;
+  gap: 2px;
+}
+.choice small {
+  color: var(--muted);
+  font-size: 13px;
+}
+.plan__bar .row {
+  gap: 8px;
+}
+
 /* ───────── Print journal ───────── */
 .print-wrap {
   background: var(--surface-2);

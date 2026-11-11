@@ -12,6 +12,7 @@ import { Stepper } from './Stepper';
 import { TripMap } from './TripMap';
 import { LegSheet, blankLeg } from './LegSheet';
 import type { EntryPreset } from './EntrySheet';
+import { CloneSheet } from './CloneSheet';
 
 export const modeLabel = (m?: string) => TRAVEL_MODES.find((x) => x.id === m)?.label ?? 'Travel';
 
@@ -59,6 +60,7 @@ export function PlanView({
   const { trip, entries, schedule, legs } = data;
   const [view, setView] = useState<'overview' | 'days'>('overview');
   const [editing, setEditing] = useState<{ leg: Leg; isNew: boolean } | null>(null);
+  const [cloning, setCloning] = useState(false);
   const nav = useNavigate();
 
   const byLeg = useMemo(() => {
@@ -144,9 +146,14 @@ export function PlanView({
         </div>
         <span className="row">
           {legs.length > 0 && (
-            <button className="btn btn--ghost btn--sm" onClick={() => nav(`/trip/${trip.id}/plan/print`)}>
-              <Icon name="download" size={16} /> Export PDF
-            </button>
+            <>
+              <button className="btn btn--ghost btn--sm" onClick={() => setCloning(true)}>
+                <Icon name="copy" size={16} /> Clone
+              </button>
+              <button className="btn btn--ghost btn--sm" onClick={() => nav(`/trip/${trip.id}/plan/print`)}>
+                <Icon name="download" size={16} /> Export PDF
+              </button>
+            </>
           )}
           <button className="btn btn--primary btn--sm" onClick={addLeg}>
             <Icon name="plus" size={16} /> Add location
@@ -249,6 +256,7 @@ export function PlanView({
         <DayByDay data={data} days={schedule.days} onAddStop={onAddStop} onOpen={onOpen} onAddLeg={addLeg} onOpenLeg={openLeg} />
       )}
 
+      {cloning && <CloneSheet data={data} onClose={() => setCloning(false)} />}
       {editing && (
         <LegSheet
           leg={editing.leg}
