@@ -5,8 +5,14 @@ import { exportBackup, importBackup } from '../lib/backup';
 import { CURRENCIES } from '../lib/format';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
+import { SyncLabel } from '../components/Layout';
+import { signOut, useAccount } from '../lib/account';
+import { hasUnsyncedChanges, stopSync, syncNow, useSyncStatus } from '../lib/sync';
+import { supabaseConfigured } from '../lib/supabase';
 
 export function SettingsPage() {
+  const { profile } = useAccount();
+  const sync = useSyncStatus();
   const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState('');
@@ -38,6 +44,41 @@ export function SettingsPage() {
           <h1 className="display">Preferences & data</h1>
         </div>
       </header>
+
+      {supabaseConfigured && profile && (
+        <div className="panel">
+          <h2 className="h3">Your account</h2>
+          <div className="account">
+            <span className="avatar avatar--lg">{profile.first_name[0]}{profile.last_name[0]}</span>
+            <span>
+              <strong>{profile.first_name} {profile.last_name}</strong>
+              {profile.is_admin && <span className="tag tag--accent">Admin</span>}
+              <SyncLabel state={sync.state} pending={sync.pending} />
+              {sync.lastSync && <small className="muted"> Last synced {new Date(sync.lastSync).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</small>}
+            </span>
+          </div>
+          {sync.state === 'error' && sync.message && <p className="notice small">{sync.message}</p>}
+          <p className="muted small">Your trips, stops, plans and photos are saved to your account and sync to every device you sign in on.</p>
+          <div className="row">
+            <button className="btn btn--ghost" onClick={() => void syncNow()} disabled={sync.state === 'syncing'}>
+              Sync now
+            </button>
+            <button
+              className="btn btn--ghost btn--danger"
+              onClick={async () => {
+                setBusy('Uploading your latest changes…');
+                await syncNow();
+                setBusy('');
+                if (hasUnsyncedChanges() && !confirm('Some changes haven’t uploaded yet (you may be offline). Signing out now will lose them on this device. Sign out anyway?')) return;
+                await stopSync();
+                await signOut();
+              }}
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="panel">
         <h2 className="h3">Default currency</h2>

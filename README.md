@@ -25,11 +25,18 @@ It's an installable web app (PWA), so one codebase runs on **iPhone, iPad, Andro
 
 Wayfare has no subscription, paywall or usage limits. Every feature is available to everyone: unlimited trips, photos and videos, the print journal, posters without a watermark, and carousel export.
 
-## Data & privacy
+## Accounts & data
 
-Everything is stored on the device in IndexedDB: trips, stops, and the photos and videos themselves. Photos are resized to 2400 px for display and a 520 px thumbnail is kept. Videos are stored as-is. The only network calls are map tiles (CARTO/OpenStreetMap), place search and reverse geocoding (Nominatim), and Google Fonts.
+Everyone signs in with **first name + last name + a 4-digit PIN**. Data is stored in Supabase (project `wayfare`, region ap-southeast-1) and also kept on each device, so the app keeps working offline and syncs in the background. Push and pull happen when you sign in, about 2 seconds after each change, every minute, and when the app comes back into view. If the same item is changed on two devices, the most recent save wins.
 
-**iPhone tip:** iOS sometimes removes the location from photos picked in Safari. If an imported photo has no location, choose **Options → Location** in the share sheet, or set the location manually.
+- **Database:** `supabase/migrations/20261111000000_wayfare_init.sql` defines `wf_profiles`, `wf_records` (trips, stops, plan locations and photo details as JSON), and the private `wayfare-media` storage bucket for photos and videos.
+- **Privacy:** row-level security means each person can only read and write their own records and photos. The admin can *read* everyone's data and reset PINs, but can't change anyone's trips.
+- **Admin:** the first account named **Ben Chia** (or Ben Chua) becomes the admin. Create it first.
+- **Sign-up:** handled by the `pyt-signup` Edge Function (`supabase/functions/pyt-signup`). It creates the Supabase Auth account directly, because Supabase's public sign-up needs a real email address.
+- **Security note:** a 4-digit PIN has only 10,000 combinations. Supabase limits sign-in attempts, but a determined person could still guess a PIN, so keep the admin PIN private.
+- The Supabase URL and publishable key are built into the app. They're designed to be public, because the security rules above protect the data. Override them with `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY`.
+
+The app uses OpenStreetMap services for map tiles (CARTO), place search (Nominatim), and Google Fonts.
 
 ## Develop
 

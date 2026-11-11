@@ -2320,6 +2320,197 @@ textarea.input {
   text-align: left;
 }
 
+/* ───────── Accounts ───────── */
+.auth {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: calc(24px + var(--safe-t)) 16px calc(24px + var(--safe-b));
+  background: radial-gradient(circle at 30% 10%, var(--surface), var(--bg) 60%);
+}
+.auth__card {
+  width: min(460px, 100%);
+  display: grid;
+  gap: 14px;
+  padding: 32px;
+  border-radius: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+}
+.auth__card .display {
+  font-size: 34px;
+  margin-top: 10px;
+}
+.auth__card .field {
+  margin-bottom: 0;
+}
+.input--pin {
+  font-size: 24px;
+  letter-spacing: 0.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.auth__err {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 500;
+}
+.auth__switch {
+  text-align: center;
+  font-size: 14px;
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.avatar--lg {
+  width: 52px;
+  height: 52px;
+  font-size: 18px;
+}
+.rail__me {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+}
+.rail__me:hover {
+  background: var(--surface-2);
+}
+.rail__me > span:last-child {
+  display: grid;
+  min-width: 0;
+}
+.rail__me strong {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.sync i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4e7d5b;
+}
+.sync--syncing i {
+  background: var(--accent);
+  animation: pulse 1s infinite alternate;
+}
+.sync--offline i {
+  background: var(--muted);
+}
+.sync--error i {
+  background: var(--danger);
+}
+@keyframes pulse {
+  to {
+    opacity: 0.3;
+  }
+}
+.account {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 10px 0 12px;
+}
+.account > span:last-child {
+  display: grid;
+  gap: 2px;
+}
+.account strong {
+  font-size: 17px;
+}
+.admin__search {
+  margin-bottom: 18px;
+  max-width: 420px;
+}
+.admin__users {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.admin__user {
+  margin: 0;
+  padding: 14px 18px;
+}
+.admin__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.admin__who {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  min-width: 0;
+}
+.admin__who > span:last-child {
+  display: grid;
+}
+.admin__who strong {
+  font-size: 16px;
+  margin-right: 8px;
+}
+.admin__trips {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+.admin__trip {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+}
+.admin__trip-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  text-align: left;
+  flex-wrap: wrap;
+}
+.admin__trip-head > span:first-child {
+  flex: 1 1 220px;
+  display: grid;
+}
+.admin__trip-head strong {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 18px;
+}
+.admin__trip-body {
+  padding: 0 14px 14px;
+}
+
 /* ───────── Print journal ───────── */
 .print-wrap {
   background: var(--surface-2);
@@ -2541,6 +2732,9 @@ textarea.input {
   }
   .rail {
     display: none;
+  }
+  .auth__card {
+    padding: 24px 20px;
   }
   .main {
     padding-bottom: calc(70px + var(--safe-b));

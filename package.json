@@ -10,6 +10,7 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^1.1.7",
     "exifr": "^7.1.3",

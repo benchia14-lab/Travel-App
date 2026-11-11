@@ -1,5 +1,7 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Icon } from './Icon';
+import { useAccount } from '../lib/account';
+import { useSyncStatus } from '../lib/sync';
 
 export function Logo() {
   return (
@@ -15,11 +17,14 @@ export function Logo() {
 
 export function Layout() {
   const loc = useLocation();
+  const { profile } = useAccount();
+  const sync = useSyncStatus();
   const immersive = /\/(print|share)$/.test(loc.pathname);
   if (immersive) return <Outlet />;
 
   const links = [
     { to: '/', icon: 'globe', label: 'Journeys', end: true },
+    ...(profile?.is_admin ? [{ to: '/admin', icon: 'crown', label: 'Admin' }] : []),
     { to: '/settings', icon: 'settings', label: 'Settings' },
   ];
 
@@ -37,6 +42,15 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
+        {profile && (
+          <NavLink to="/settings" className="rail__me">
+            <span className="avatar">{profile.first_name[0]}{profile.last_name[0]}</span>
+            <span>
+              <strong>{profile.first_name} {profile.last_name}</strong>
+              <SyncLabel state={sync.state} pending={sync.pending} />
+            </span>
+          </NavLink>
+        )}
       </aside>
       <main className="main">
         <Outlet />
@@ -51,4 +65,18 @@ export function Layout() {
       </nav>
     </div>
   );
+}
+
+export function SyncLabel({ state, pending }: { state: string; pending: number }) {
+  const text =
+    state === 'syncing'
+      ? 'Syncing…'
+      : state === 'offline'
+        ? `Offline${pending ? ` · ${pending} to upload` : ''}`
+        : state === 'error'
+          ? 'Sync problem'
+          : pending
+            ? `${pending} change${pending === 1 ? '' : 's'} to upload`
+            : 'All synced';
+  return <small className={`sync sync--${state}`}><i />{text}</small>;
 }
