@@ -6,6 +6,7 @@ import { TripPage } from './pages/TripPage';
 import { PrintPage } from './pages/PrintPage';
 import { SharePage } from './pages/SharePage';
 import { SettingsPage } from './pages/SettingsPage';
+import { LocationPage } from './pages/LocationPage';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route element={<Layout />}>
             <Route index element={<TripsPage />} />
             <Route path="trip/:id" element={<TripPage />} />
+            <Route path="trip/:id/place/:legId" element={<LocationPage />} />
             <Route path="trip/:id/print" element={<PrintPage />} />
             <Route path="trip/:id/share" element={<SharePage />} />
             <Route path="settings" element={<SettingsPage />} />

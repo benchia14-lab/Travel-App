@@ -59,6 +59,7 @@ export function TripMap({
   className = '',
   showRoute = true,
   interactive = true,
+  colorFor,
 }: {
   entries: Entry[];
   media?: Media[];
@@ -68,6 +69,8 @@ export function TripMap({
   className?: string;
   showRoute?: boolean;
   interactive?: boolean;
+  /** Override pin colours (defaults to the stop's category colour). */
+  colorFor?: (e: Entry) => string;
 }) {
   const scheme = useColorScheme();
   const located = useMemo(() => entries.filter((e) => e.lat != null && e.lng != null), [entries]);
@@ -102,7 +105,7 @@ export function TripMap({
         <Marker
           key={e.id}
           position={[e.lat!, e.lng!]}
-          icon={pinIcon(i + 1, categoryMeta(e.category).color, e.id === activeId)}
+          icon={pinIcon(i + 1, colorFor?.(e) ?? categoryMeta(e.category).color, e.id === activeId)}
           zIndexOffset={e.id === activeId ? 1000 : 0}
           eventHandlers={{ click: () => onSelect?.(e) }}
         >

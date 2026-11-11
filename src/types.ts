@@ -46,6 +46,44 @@ export interface Entry {
   dishes: Dish[]; // food log
   tags: string[];
   wouldReturn?: boolean;
+  /** Planned = on the itinerary but not done yet. Missing means done. */
+  status?: 'planned' | 'done';
+  /** Estimated time the stop takes, in minutes (for planning). */
+  durationMins?: number;
+  /** The planned location (leg) this stop belongs to. */
+  legId?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type TravelMode = 'flight' | 'train' | 'car' | 'bus' | 'ferry' | 'walk' | 'other';
+
+export const TRAVEL_MODES: { id: TravelMode; label: string }[] = [
+  { id: 'flight', label: 'Flight' },
+  { id: 'train', label: 'Train' },
+  { id: 'car', label: 'Drive' },
+  { id: 'bus', label: 'Bus' },
+  { id: 'ferry', label: 'Ferry' },
+  { id: 'walk', label: 'Walk' },
+  { id: 'other', label: 'Other' },
+];
+
+/** A planned location on the itinerary, with the number of days spent there. */
+export interface Leg {
+  id: string;
+  tripId: string;
+  order: number;
+  name: string; // e.g. "Kyoto"
+  country?: string;
+  lat?: number;
+  lng?: number;
+  days: number; // days allocated to this location
+  /** How you get here from the previous location (ignored for the first). */
+  travelMode?: TravelMode;
+  /** Whole days spent travelling to get here (0 = travel on the arrival day). */
+  travelDays: number;
+  travelNotes?: string;
+  notes: string;
   createdAt: number;
   updatedAt: number;
 }

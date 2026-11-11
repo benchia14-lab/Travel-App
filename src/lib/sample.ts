@@ -1,5 +1,5 @@
 import { db, uid } from '../db';
-import type { Category, Dish, Entry, Media, Trip } from '../types';
+import type { Category, Dish, Entry, Leg, Media, Trip } from '../types';
 
 /** Paints a soft, illustrative "photo" so the demo trip has imagery without bundling assets. */
 async function paint(seed: number, palette: [string, string, string], w = 1600, h = 1200): Promise<Blob> {
@@ -109,7 +109,17 @@ export async function loadSample(): Promise<string> {
     }
   }
   trip.coverMediaId = media.find((m) => m.fileName.startsWith('Sunset'))?.id ?? media[0]?.id;
-  await db.transaction('rw', db.trips, db.entries, db.media, async () => {
+  // The plan: 2 days in Lisbon, a day trip by train to Sintra, then a last day back in Lisbon.
+  const leg = (order: number, name: string, lat: number, lng: number, days: number, extra: Partial<Leg> = {}): Leg => ({
+    id: uid(), tripId, order, name, country: 'Portugal', lat, lng, days, travelDays: 0, notes: '', createdAt: Date.now(), updatedAt: Date.now(), ...extra,
+  });
+  const legs = [
+    leg(0, 'Lisbon', 38.7223, -9.1393, 2, { notes: 'Staying at Memmo Alfama. Book Taberna early.' }),
+    leg(1, 'Sintra', 38.7979, -9.3881, 1, { travelMode: 'train', travelNotes: 'Rossio → Sintra, 40 min' }),
+    leg(2, 'Lisbon', 38.7223, -9.1393, 1, { travelMode: 'train', notes: 'Shopping and a last long lunch.' }),
+  ];
+  await db.transaction('rw', [db.trips, db.entries, db.media, db.legs], async () => {
+    await db.legs.bulkAdd(legs);
     await db.trips.add(trip);
     await db.entries.bulkAdd(entries);
     await db.media.bulkAdd(media);

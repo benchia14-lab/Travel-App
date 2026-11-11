@@ -11,7 +11,10 @@ import { TripMap } from './TripMap';
 import { Sheet } from './Sheet';
 import { useToast } from './Toast';
 
-export function blankEntry(trip: Trip, category: Category = 'food'): Entry {
+/** Fields to pre-fill when a stop is added from the planner (location, day, planned). */
+export type EntryPreset = Partial<Pick<Entry, 'legId' | 'area' | 'country' | 'lat' | 'lng' | 'datetime' | 'status' | 'placeName'>>;
+
+export function blankEntry(trip: Trip, category: Category = 'food', preset: EntryPreset = {}): Entry {
   const now = new Date();
   const inTrip = trip.startDate && toLocalISO(now).slice(0, 10) >= trip.startDate && toLocalISO(now).slice(0, 10) <= (trip.endDate || trip.startDate);
   return {
@@ -27,6 +30,7 @@ export function blankEntry(trip: Trip, category: Category = 'food'): Entry {
     tags: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    ...preset,
   };
 }
 
@@ -173,7 +177,7 @@ export function EntrySheet({
 
   return (
     <Sheet
-      title={isNew ? 'New stop' : 'Edit stop'}
+      title={isNew ? (e.status === 'planned' ? 'Plan a stop' : 'New stop') : 'Edit stop'}
       onClose={cancel}
       footer={
         <>
@@ -192,6 +196,15 @@ export function EntrySheet({
         </>
       }
     >
+      <div className="seg seg--status" role="radiogroup" aria-label="Status">
+        <button role="radio" aria-checked={e.status === 'planned'} className={e.status === 'planned' ? 'on' : ''} onClick={() => set('status', 'planned')}>
+          <Icon name="route" size={16} /> Planned
+        </button>
+        <button role="radio" aria-checked={e.status !== 'planned'} className={e.status !== 'planned' ? 'on' : ''} onClick={() => set('status', 'done')}>
+          <Icon name="check" size={16} /> Done
+        </button>
+      </div>
+
       <div className="seg seg--scroll" role="tablist">
         {CATEGORIES.map((c) => (
           <button
@@ -333,6 +346,34 @@ export function EntrySheet({
           />
         </section>
       </div>
+
+      {e.status === 'planned' && (
+        <section className="field">
+          <label className="field__label" htmlFor="dur">
+            Estimated time
+          </label>
+          <div className="row">
+            <input
+              id="dur"
+              className="input input--num"
+              type="number"
+              inputMode="decimal"
+              min="0"
+              step="0.5"
+              placeholder="Hours"
+              value={e.durationMins != null ? e.durationMins / 60 : ''}
+              onChange={(ev) => set('durationMins', ev.target.value === '' ? undefined : Math.round(+ev.target.value * 60))}
+            />
+            <span className="muted small">hours</span>
+            {[1, 2, 3, 4].map((h) => (
+              <button key={h} type="button" className={`chip ${e.durationMins === h * 60 ? 'on' : ''}`} onClick={() => set('durationMins', h * 60)}>
+                {h}h
+              </button>
+            ))}
+          </div>
+          <p className="hint">The cost above is your estimate while the stop is planned. Switch to Done once you've been.</p>
+        </section>
+      )}
 
       <section className="field field--row">
         <div>

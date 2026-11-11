@@ -43,7 +43,7 @@ export function TripForm({ trip, onClose }: { trip?: Trip; onClose: () => void }
     };
     await db.trips.put(clean);
     onClose();
-    if (!trip) nav(`/trip/${clean.id}`);
+    if (!trip) nav(`/trip/${clean.id}?tab=plan`);
   };
 
   const remove = async () => {

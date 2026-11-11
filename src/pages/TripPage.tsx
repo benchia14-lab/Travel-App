@@ -9,14 +9,17 @@ import { Icon } from '../components/Icon';
 import { Stars } from '../components/Stars';
 import { TripMap } from '../components/TripMap';
 import { EntryCard } from '../components/EntryCard';
-import { EntrySheet, blankEntry } from '../components/EntrySheet';
+import { EntrySheet, blankEntry, type EntryPreset } from '../components/EntrySheet';
+import { PlanView } from '../components/PlanView';
+import { toLocalISO } from '../lib/media';
 import { TripForm } from '../components/TripForm';
 import { ImportSheet } from '../components/ImportSheet';
 import { Lightbox } from '../components/Lightbox';
 import { Thumb } from '../components/Thumb';
 
-type Tab = 'journal' | 'map' | 'food' | 'activities' | 'spend' | 'gallery';
+type Tab = 'plan' | 'journal' | 'map' | 'food' | 'activities' | 'spend' | 'gallery';
 const TABS: { id: Tab; label: string; icon: string }[] = [
+  { id: 'plan', label: 'Plan', icon: 'route' },
   { id: 'journal', label: 'Journal', icon: 'list' },
   { id: 'map', label: 'Map', icon: 'map' },
   { id: 'food', label: 'Food log', icon: 'fork' },
@@ -29,7 +32,7 @@ export function TripPage() {
   const { id } = useParams();
   const data = useTripData(id);
   const [params, setParams] = useSearchParams();
-  const tab = (params.get('tab') as Tab) || 'journal';
+  const requested = params.get('tab') as Tab | null;
   const [editing, setEditing] = useState<{ entry: Entry; isNew: boolean } | null>(null);
   const [editTrip, setEditTrip] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -47,8 +50,10 @@ export function TripPage() {
     );
 
   const { trip, entries, media, mediaByEntry, stats } = data;
+  // Before the trip starts (or with nothing logged yet) the plan is the natural home; afterwards the journal.
+  const tab: Tab = requested ?? (entries.length === 0 || toLocalISO(new Date()).slice(0, 10) < trip.startDate ? 'plan' : 'journal');
   const cover = media.find((m) => m.id === trip.coverMediaId) ?? media.find((m) => m.kind === 'image');
-  const add = (c: Category = 'food') => setEditing({ entry: blankEntry(trip, c), isNew: true });
+  const add = (c: Category = 'food', preset?: EntryPreset) => setEditing({ entry: blankEntry(trip, c, preset), isNew: true });
   const open = (e: Entry) => setEditing({ entry: e, isNew: false });
   const view = (items: Media[]) => (m: Media) => setViewer({ items, start: m });
 
@@ -108,13 +113,15 @@ export function TripPage() {
             role="tab"
             aria-selected={tab === t.id}
             className={tab === t.id ? 'on' : ''}
-            onClick={() => setParams(t.id === 'journal' ? {} : { tab: t.id }, { replace: true })}
+            onClick={() => setParams({ tab: t.id }, { replace: true })}
           >
             <Icon name={t.icon} size={17} />
             {t.label}
           </button>
         ))}
       </nav>
+
+      {tab === 'plan' && <PlanView data={data} onAddStop={(p) => add('attraction', p)} onOpen={open} />}
 
       {tab === 'journal' && (
         <div className="split">

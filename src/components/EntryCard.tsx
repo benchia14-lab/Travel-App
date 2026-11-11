@@ -27,7 +27,7 @@ export function EntryCard({
   const meta = categoryMeta(entry.category);
   return (
     <article
-      className={`entry ${active ? 'entry--active' : ''}`}
+      className={`entry ${active ? 'entry--active' : ''} ${entry.status === 'planned' ? 'entry--planned' : ''}`}
       style={{ ['--c' as string]: meta.color }}
       onMouseEnter={() => onHover?.(true)}
       onMouseLeave={() => onHover?.(false)}
@@ -41,6 +41,7 @@ export function EntryCard({
             <p className="entry__cat">
               <i className="dot" /> {meta.label}
               <span className="muted"> · {fmtTime(entry.datetime)}</span>
+              {entry.status === 'planned' && <span className="tag">Planned</span>}
             </p>
             <h3>{entry.title || entry.placeName}</h3>
             {entry.placeName && entry.placeName !== entry.title && <p className="muted entry__place">{entry.placeName}</p>}

@@ -1,7 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useMemo } from 'react';
 import { db } from '../db';
-import type { Category, Entry, Media, Trip } from '../types';
+import type { Category, Entry, Leg, Media, Trip } from '../types';
+import { buildSchedule, type Schedule } from './itinerary';
 import { routeKm } from './geo';
 
 export interface TripData {
@@ -10,6 +11,8 @@ export interface TripData {
   media: Media[];
   mediaByEntry: Map<string, Media[]>;
   stats: TripStats;
+  legs: Leg[];
+  schedule: Schedule;
 }
 
 export interface TripStats {
@@ -23,6 +26,9 @@ export interface TripStats {
   avgRating: number;
   topRated: Entry[];
   countByCategory: Record<Category, number>;
+  /** Estimated cost of stops still marked as planned (not in `total`). */
+  plannedTotal: number;
+  plannedCount: number;
 }
 
 export function computeStats(entries: Entry[], media: Media[]): TripStats {
@@ -30,7 +36,14 @@ export function computeStats(entries: Entry[], media: Media[]): TripStats {
   const countByCategory = {} as Record<Category, number>;
   const dayMap = new Map<string, number>();
   let total = 0;
+  let plannedTotal = 0;
+  let plannedCount = 0;
   for (const e of entries) {
+    if (e.status === 'planned') {
+      plannedTotal += e.cost ?? 0;
+      plannedCount++;
+      continue;
+    }
     const c = e.cost ?? 0;
     total += c;
     byCategory[e.category] = (byCategory[e.category] ?? 0) + c;
@@ -42,6 +55,8 @@ export function computeStats(entries: Entry[], media: Media[]): TripStats {
   const rated = entries.filter((e) => e.rating > 0);
   return {
     total,
+    plannedTotal,
+    plannedCount,
     byCategory,
     countByCategory,
     byDay: [...dayMap].sort(([a], [b]) => a.localeCompare(b)).map(([day, t]) => ({ day, total: t })),
@@ -61,9 +76,10 @@ export function useTripData(id: string | undefined): TripData | null | undefined
     [id],
   );
   const media = useLiveQuery(() => (id ? db.media.where('tripId').equals(id).sortBy('takenAt') : []), [id]);
+  const legs = useLiveQuery(() => (id ? db.legs.where('tripId').equals(id).sortBy('order') : []), [id]);
 
   return useMemo(() => {
-    if (trip === null || !entries || !media) return undefined; // loading
+    if (trip === null || !entries || !media || !legs) return undefined; // loading
     if (!trip) return null; // not found
     const mediaByEntry = new Map<string, Media[]>();
     for (const m of media) {
@@ -72,6 +88,6 @@ export function useTripData(id: string | undefined): TripData | null | undefined
       arr.push(m);
       mediaByEntry.set(m.entryId, arr);
     }
-    return { trip, entries, media, mediaByEntry, stats: computeStats(entries, media) };
-  }, [trip, entries, media]);
+    return { trip, entries, media, mediaByEntry, stats: computeStats(entries, media), legs, schedule: buildSchedule(trip, legs) };
+  }, [trip, entries, media, legs]);
 }
