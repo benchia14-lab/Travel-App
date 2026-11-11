@@ -1,5 +1,4 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { usePlan } from '../lib/plan';
 import { Icon } from './Icon';
 
 export function Logo() {
@@ -15,14 +14,12 @@ export function Logo() {
 }
 
 export function Layout() {
-  const plan = usePlan();
   const loc = useLocation();
   const immersive = /\/(print|share)$/.test(loc.pathname);
   if (immersive) return <Outlet />;
 
   const links = [
     { to: '/', icon: 'globe', label: 'Journeys', end: true },
-    { to: '/pro', icon: 'crown', label: plan.tier === 'pro' ? 'Membership' : 'Go Pro' },
     { to: '/settings', icon: 'settings', label: 'Settings' },
   ];
 
@@ -40,18 +37,6 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
-        <div className="rail__foot">
-          {plan.tier === 'pro' ? (
-            <span className="badge badge--pro">
-              <Icon name="crown" size={14} /> Pro member
-            </span>
-          ) : (
-            <NavLink to="/pro" className="upsell">
-              <strong>Wayfare Pro</strong>
-              <span>Unlimited trips, print journals & watermark-free posters.</span>
-            </NavLink>
-          )}
-        </div>
       </aside>
       <main className="main">
         <Outlet />

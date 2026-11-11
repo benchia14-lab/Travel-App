@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import type { Entry } from '../types';
 import { CATEGORIES, categoryMeta } from '../types';
 import { useTripData } from '../lib/hooks';
 import { blobUrl } from '../lib/media';
 import { dateRange, dayKey, fmtDate, fmtTime, money, tripDays } from '../lib/format';
-import { usePlan } from '../lib/plan';
 import { TripMap } from '../components/TripMap';
 import { Stars } from '../components/Stars';
 import { Icon } from '../components/Icon';
@@ -14,7 +13,6 @@ import { Logo } from '../components/Layout';
 export function PrintPage() {
   const { id } = useParams();
   const data = useTripData(id);
-  const plan = usePlan();
   const [opts, setOpts] = useState({ photos: true, costs: true, map: true, notes: true });
 
   const days = useMemo(() => {
@@ -23,7 +21,6 @@ export function PrintPage() {
     return [...map];
   }, [data?.entries]);
 
-  if (plan.tier !== 'pro') return <Navigate to="/pro?reason=print" replace />;
   if (!data) return <div className="page"><div className="skeleton" /></div>;
   const { trip, entries, media, mediaByEntry, stats } = data;
   const cover = media.find((m) => m.id === trip.coverMediaId) ?? media.find((m) => m.kind === 'image');

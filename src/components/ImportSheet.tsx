@@ -5,7 +5,6 @@ import { CATEGORIES } from '../types';
 import { clusterByPlace, reverseGeocode } from '../lib/geo';
 import { ingestFile } from '../lib/media';
 import { fmtDate, fmtTime } from '../lib/format';
-import { FREE_LIMITS, usePlan } from '../lib/plan';
 import { Sheet } from './Sheet';
 import { Thumb } from './Thumb';
 import { Icon } from './Icon';
@@ -23,19 +22,16 @@ interface Group {
  * Bulk photo import: reads GPS + timestamps from each photo, groups photos taken
  * at the same place and time into stops, and reverse-geocodes each stop.
  */
-export function ImportSheet({ trip, tripMediaCount, onClose }: { trip: Trip; tripMediaCount: number; onClose: () => void }) {
+export function ImportSheet({ trip, onClose }: { trip: Trip; onClose: () => void }) {
   const [groups, setGroups] = useState<Group[]>([]);
   const [loose, setLoose] = useState<Media[]>([]);
   const [progress, setProgress] = useState<{ done: number; total: number; label: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const plan = usePlan();
   const toast = useToast();
 
   const onFiles = async (files: FileList | null) => {
     if (!files?.length) return;
-    const room = plan.tier === 'free' ? Math.max(0, FREE_LIMITS.mediaPerTrip - tripMediaCount) : Infinity;
-    const list = Array.from(files).slice(0, room);
-    if (list.length < files.length) toast(`Free plan keeps ${FREE_LIMITS.mediaPerTrip} memories per trip — imported ${list.length}.`);
+    const list = Array.from(files);
     const out: Media[] = [];
     for (let i = 0; i < list.length; i++) {
       setProgress({ done: i, total: list.length, label: 'Reading photos' });

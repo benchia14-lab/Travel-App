@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTripData } from '../lib/hooks';
 import { FORMATS, canvasBlob, renderStopPoster, renderTripPoster, shareOrDownload, type PosterFormat, type PosterOptions, type PosterTheme } from '../lib/poster';
-import { usePlan } from '../lib/plan';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 
@@ -11,7 +10,6 @@ type Mode = 'recap' | 'stops';
 export function SharePage() {
   const { id } = useParams();
   const data = useTripData(id);
-  const plan = usePlan();
   const toast = useToast();
   const [mode, setMode] = useState<Mode>('recap');
   const [format, setFormat] = useState<PosterFormat>('post');
@@ -22,8 +20,7 @@ export function SharePage() {
   const [busy, setBusy] = useState(false);
   const urls = useRef<string[]>([]);
 
-  const opts: PosterOptions = { format, theme, showCost, watermark: plan.tier !== 'pro' };
-  const pro = plan.tier === 'pro';
+  const opts: PosterOptions = { format, theme, showCost };
   const stops = data?.entries ?? [];
 
   const render = async (which: 'all' | 'one') => {
@@ -53,14 +50,10 @@ export function SharePage() {
     return () => {
       cancelled = true;
     };
-  }, [data, mode, format, theme, showCost, stopIdx, plan.tier]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data, mode, format, theme, showCost, stopIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const exportAll = async (which: 'all' | 'one') => {
     if (!data) return;
-    if (which === 'all' && !pro) {
-      toast('Exporting a full carousel is a Pro feature.');
-      return;
-    }
     setBusy(true);
     try {
       const canvases = await render(which);
@@ -126,10 +119,9 @@ export function SharePage() {
           </button>
           {mode === 'stops' && (
             <button className="btn btn--ghost btn--block" onClick={() => exportAll('all')} disabled={busy}>
-              <Icon name={pro ? 'download' : 'lock'} size={18} /> Export all {stops.length} as carousel
+              <Icon name="download" size={18} /> Export all {stops.length} as carousel
             </button>
           )}
-          {!pro && <Link to="/pro?reason=watermark" className="small muted">Remove the “Made with Wayfare” mark with Pro →</Link>}
         </div>
       </aside>
       <section className="studio__stage">

@@ -5,7 +5,6 @@ import { CATEGORIES, categoryMeta } from '../types';
 import { useTripData, type TripData } from '../lib/hooks';
 import { blobUrl } from '../lib/media';
 import { dateRange, dayKey, fmtDate, money, tripDays } from '../lib/format';
-import { usePlan } from '../lib/plan';
 import { Icon } from '../components/Icon';
 import { Stars } from '../components/Stars';
 import { TripMap } from '../components/TripMap';
@@ -37,7 +36,6 @@ export function TripPage() {
   const [viewer, setViewer] = useState<{ items: Media[]; start: Media } | null>(null);
   const [active, setActive] = useState<string>();
   const nav = useNavigate();
-  const plan = usePlan();
 
   if (data === undefined) return <div className="page"><div className="skeleton" /></div>;
   if (data === null)
@@ -95,8 +93,8 @@ export function TripPage() {
           <Icon name="camera" size={18} /> Import photos
         </button>
         <span className="spacer" />
-        <button className="btn btn--ghost" onClick={() => nav(plan.tier === 'pro' ? `/trip/${trip.id}/print` : '/pro?reason=print')}>
-          <Icon name={plan.tier === 'pro' ? 'print' : 'lock'} size={18} /> <span className="hide-sm">Print journal</span><span className="show-sm">Print</span>
+        <button className="btn btn--ghost" onClick={() => nav(`/trip/${trip.id}/print`)}>
+          <Icon name="print" size={18} /> <span className="hide-sm">Print journal</span><span className="show-sm">Print</span>
         </button>
         <button className="btn btn--ink" onClick={() => nav(`/trip/${trip.id}/share`)}>
           <Icon name="share" size={18} /> <span className="hide-sm">Share story</span><span className="show-sm">Share</span>
@@ -195,12 +193,11 @@ export function TripPage() {
           entry={editing.entry}
           isNew={editing.isNew}
           media={mediaByEntry.get(editing.entry.id) ?? []}
-          tripMediaCount={media.length}
           onClose={() => setEditing(null)}
         />
       )}
       {editTrip && <TripForm trip={trip} onClose={() => setEditTrip(false)} />}
-      {importing && <ImportSheet trip={trip} tripMediaCount={media.length} onClose={() => setImporting(false)} />}
+      {importing && <ImportSheet trip={trip} onClose={() => setImporting(false)} />}
       {viewer && <Lightbox items={viewer.items} start={viewer.start} entries={entries} coverId={trip.coverMediaId} onClose={() => setViewer(null)} />}
     </div>
   );

@@ -5,7 +5,6 @@ import { TripsPage } from './pages/TripsPage';
 import { TripPage } from './pages/TripPage';
 import { PrintPage } from './pages/PrintPage';
 import { SharePage } from './pages/SharePage';
-import { ProPage } from './pages/ProPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 export default function App() {
@@ -18,7 +17,6 @@ export default function App() {
             <Route path="trip/:id" element={<TripPage />} />
             <Route path="trip/:id/print" element={<PrintPage />} />
             <Route path="trip/:id/share" element={<SharePage />} />
-            <Route path="pro" element={<ProPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<TripsPage />} />
           </Route>

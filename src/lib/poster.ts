@@ -16,7 +16,6 @@ export interface PosterOptions {
   format: PosterFormat;
   theme: PosterTheme;
   showCost: boolean;
-  watermark: boolean;
 }
 
 const THEMES = {
@@ -215,12 +214,12 @@ function drawRoute(
   ctx.restore();
 }
 
-function footer(ctx: CanvasRenderingContext2D, W: number, H: number, t: (typeof THEMES)['ivory'], o: PosterOptions) {
+function footer(ctx: CanvasRenderingContext2D, W: number, H: number, t: (typeof THEMES)['ivory']) {
   ctx.fillStyle = t.muted;
   ctx.font = `600 22px ${SANS}`;
   ctx.textAlign = 'right';
   ctx.letterSpacing = '4px';
-  ctx.fillText(o.watermark ? 'MADE WITH WAYFARE' : 'WAYFARE', W - 72, H - 56);
+  ctx.fillText('WAYFARE', W - 72, H - 56);
   ctx.letterSpacing = '0px';
   ctx.textAlign = 'left';
 }
@@ -366,7 +365,7 @@ export async function renderTripPoster(
   ctx.font = `500 24px ${SANS}`;
   const best = stats.topRated[0];
   if (best) wrap(ctx, `Highlight · ${best.title || best.placeName}`, M, H - 56, W - M * 2 - 300, 30, 1);
-  footer(ctx, W, H, t, o);
+  footer(ctx, W, H, t);
   bmps.forEach((b) => b?.close());
   return c;
 }
@@ -449,7 +448,7 @@ export async function renderStopPoster(
   ctx.fillStyle = t.muted;
   ctx.font = `500 24px ${SANS}`;
   ctx.fillText(trip.title, M, H - 56);
-  footer(ctx, W, H, t, o);
+  footer(ctx, W, H, t);
   bmps.forEach((b) => b?.close());
   return c;
 }

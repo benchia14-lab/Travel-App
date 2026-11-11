@@ -4,7 +4,6 @@ import type { Category, Dish, Entry, Media, Trip } from '../types';
 import { CATEGORIES } from '../types';
 import { currentPosition, reverseGeocode, searchPlaces, type Place } from '../lib/geo';
 import { ingestFile, toLocalISO } from '../lib/media';
-import { FREE_LIMITS, usePlan } from '../lib/plan';
 import { Icon } from './Icon';
 import { Stars } from './Stars';
 import { Thumb } from './Thumb';
@@ -36,14 +35,12 @@ export function EntrySheet({
   entry: initial,
   isNew,
   media,
-  tripMediaCount,
   onClose,
 }: {
   trip: Trip;
   entry: Entry;
   isNew: boolean;
   media: Media[];
-  tripMediaCount: number;
   onClose: () => void;
 }) {
   const [e, setE] = useState<Entry>(initial);
@@ -54,7 +51,6 @@ export function EntrySheet({
   const [pickOnMap, setPickOnMap] = useState(false);
   const [pending, setPending] = useState<Media[]>([]); // uploaded during this edit
   const fileRef = useRef<HTMLInputElement>(null);
-  const plan = usePlan();
   const toast = useToast();
   const set = <K extends keyof Entry>(k: K, v: Entry[K]) => setE((p) => ({ ...p, [k]: v }));
 
@@ -116,9 +112,7 @@ export function EntrySheet({
 
   const onFiles = async (files: FileList | null) => {
     if (!files?.length) return;
-    const limit = plan.tier === 'free' ? FREE_LIMITS.mediaPerTrip - tripMediaCount - pending.length : Infinity;
-    const list = Array.from(files).slice(0, Math.max(0, limit));
-    if (list.length < files.length) toast(`Free plan keeps ${FREE_LIMITS.mediaPerTrip} memories per trip. Upgrade for unlimited.`);
+    const list = Array.from(files);
     setBusy(`Processing ${list.length} file${list.length > 1 ? 's' : ''}…`);
     const added: Media[] = [];
     for (const f of list) {

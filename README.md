@@ -16,18 +16,13 @@ It's an installable web app (PWA), so one codebase runs on **iPhone, iPad, Andro
 | **Ratings** | A half-star rating for every location and every dish, plus an overall rating for the trip. |
 | **Spend** | Total and per-day spend, a budget progress bar, a breakdown by category and by day, and a CSV export. |
 | **Print journal** | An A4 layout with a cover, summary, spend table, route map and one page per day. Use **Print / Save PDF**. You can turn photos, costs, the map and notes on or off. |
-| **Share studio** | A trip recap poster, or a card for each location, in Post 4:5, Story 9:16 or Square 1:1, with Ivory or Noir themes. You can hide prices. On a phone, **Share** opens the native share sheet so you can post straight to Instagram or TikTok. Pro can export every location as a carousel. |
+| **Share studio** | A trip recap poster, or a card for each location, in Post 4:5, Story 9:16 or Square 1:1, with Ivory or Noir themes. You can hide prices. On a phone, **Share** opens the native share sheet so you can post straight to Instagram or TikTok. You can also export every location at once as a carousel. |
 | **Gallery** | Every photo and video from the trip. You can attach items to a stop, set the trip cover or delete items. |
 | **Backup** | A single-file export and restore, for moving trips between your phone, iPad and laptop. |
 
-## Subscription
+## Free and open
 
-`src/lib/plan.ts` controls the Free and Pro tiers:
-
-- **Free**: 2 trips, 60 photos/videos per trip, and posters carry a "Made with Wayfare" watermark.
-- **Pro** ($7.99/mo or $59.99/yr): unlimited trips and media, the print journal, watermark-free posters and carousel export.
-
-> **Payments are not wired up yet.** "Start Pro" currently unlocks Pro locally so you can try every feature. Before launch, swap `activate()` in `src/pages/ProPage.tsx` for a real checkout (Stripe Checkout on the web, or RevenueCat / StoreKit / Play Billing if you wrap it as a store app), and load the entitlement from a backend after sign-in.
+Wayfare has no subscription, paywall or usage limits. Every feature is available to everyone: unlimited trips, photos and videos, the print journal, posters without a watermark, and carousel export.
 
 ## Data & privacy
 
@@ -61,17 +56,15 @@ src/
     geo.ts            search, reverse geocode, distance, photo clustering
     poster.ts         social poster renderer (canvas)
     hooks.ts          live trip data + stats
-    plan.ts           subscription entitlement
     backup.ts         export / restore
     sample.ts         demo trip
   components/         map, entry editor, import, lightbox, sheet, …
-  pages/              Journeys, Trip, Print, Share studio, Pro, Settings
+  pages/              Journeys, Trip, Print, Share studio, Settings
 ```
 
 ## Roadmap ideas
 
 - Accounts and cloud sync, so devices stay in step without backup files
-- Real checkout and a server-side entitlement
 - Multi-currency expenses with FX conversion
 - Native wrappers (Capacitor) for App Store and Play Store distribution
 - Shared trips with travel companions

@@ -5,7 +5,6 @@ import { db } from '../db';
 import type { Media, Trip } from '../types';
 import { blobUrl } from '../lib/media';
 import { dateRange, money, tripDays } from '../lib/format';
-import { FREE_LIMITS, usePlan } from '../lib/plan';
 import { TripForm } from '../components/TripForm';
 import { Icon } from '../components/Icon';
 import { Stars } from '../components/Stars';
@@ -22,7 +21,6 @@ interface Card {
 
 export function TripsPage() {
   const [creating, setCreating] = useState(false);
-  const plan = usePlan();
   const nav = useNavigate();
   const toast = useToast();
   const cards = useLiveQuery(async (): Promise<Card[]> => {
@@ -38,8 +36,7 @@ export function TripsPage() {
     );
   });
 
-  const atLimit = plan.tier === 'free' && (cards?.length ?? 0) >= FREE_LIMITS.trips;
-  const newTrip = () => (atLimit ? nav('/pro?reason=trips') : setCreating(true));
+  const newTrip = () => setCreating(true);
 
   const totals = cards?.reduce(
     (a, c) => ({ trips: a.trips + 1, days: a.days + tripDays(c.trip.startDate, c.trip.endDate), stops: a.stops + c.stops, memories: a.memories + c.memories }),
@@ -126,8 +123,8 @@ export function TripsPage() {
         ))}
         {cards && cards.length > 0 && (
           <button className="trip-card trip-card--new" onClick={newTrip}>
-            <Icon name={atLimit ? 'lock' : 'plus'} size={28} />
-            <span>{atLimit ? `Free plan includes ${FREE_LIMITS.trips} trips — upgrade for unlimited` : 'Plan a new trip'}</span>
+            <Icon name="plus" size={28} />
+            <span>Plan a new trip</span>
           </button>
         )}
       </div>
