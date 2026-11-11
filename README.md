@@ -39,7 +39,23 @@ npm run build      # type-check + production build into dist/
 npm run preview    # serve the production build
 ```
 
-The `dist/` folder works on any static host (Netlify, Vercel, Cloudflare Pages, GitHub Pages). Routing is hash-based, so no rewrite rules are needed. HTTPS is required for geolocation and install.
+## Deploy (Netlify)
+
+The repo includes `netlify.toml`, so Netlify needs no manual settings.
+
+1. Merge this branch into `main` on GitHub.
+2. Sign in at [app.netlify.com](https://app.netlify.com) with GitHub, then choose **Add new site → Import an existing project → GitHub** and pick this repository.
+3. Branch to deploy: `main`. Leave the build command and publish directory as detected (`npm run build`, `dist`), then click **Deploy**.
+4. After about a minute you get a URL like `https://your-site.netlify.app`. Rename it under **Site configuration → Change site name**, or add your own domain under **Domain management**. HTTPS is turned on automatically.
+
+Every push to `main` redeploys. Pull requests get their own preview URLs.
+
+To use it as an app, open the URL on each device and install it:
+- **iPhone / iPad:** in Safari, tap Share → **Add to Home Screen**.
+- **Android:** in Chrome, open the ⋮ menu → **Install app**.
+- **Mac / PC:** in Chrome or Edge, click the install icon in the address bar.
+
+The built `dist/` folder also works on any other static host (Vercel, Cloudflare Pages, GitHub Pages). Routing is hash-based, so no rewrite rules are needed. HTTPS is required for geolocation and install.
 
 ### Stack
 
