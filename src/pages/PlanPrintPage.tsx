@@ -1,14 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { Entry } from '../types';
 import { categoryMeta } from '../types';
 import { useTripData } from '../lib/hooks';
 import { fmtDuration, isPlanned, legForEntry } from '../lib/itinerary';
 import { dateRange, fmtDate, fmtTime, money } from '../lib/format';
-import { TripMap } from '../components/TripMap';
 import { Icon } from '../components/Icon';
 import { Logo } from '../components/Layout';
-import { legsAsEntries, modeLabel } from '../components/PlanView';
+import { modeLabel } from '../components/PlanView';
+import { shareOrDownload } from '../lib/poster';
+import { useToast } from '../components/Toast';
 
 const plural = (n: number, one: string, many = one + 's') => `${n} ${n === 1 ? one : many}`;
 
@@ -16,8 +17,18 @@ const plural = (n: number, one: string, many = one + 's') => `${n} ${n === 1 ? o
 export function PlanPrintPage() {
   const { id } = useParams();
   const data = useTripData(id);
-  const [opts, setOpts] = useState({ days: true, stops: true, map: true, costs: true, notes: true });
+  const [opts, setOpts] = useState({ days: true, stops: true, costs: true, notes: true });
   const toggle = (k: keyof typeof opts) => setOpts((o) => ({ ...o, [k]: !o[k] }));
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  // Load the PDF builder (and the logo) when the screen opens, so the file can be made instantly on tap.
+  const pdf = useRef<typeof import('../lib/planPdf') | null>(null);
+  useEffect(() => {
+    import('../lib/planPdf').then(async (m) => {
+      await m.preloadPdfAssets();
+      pdf.current = m;
+    });
+  }, []);
 
   const byLeg = useMemo(() => {
     const m = new Map<string, Entry[]>();
@@ -40,8 +51,7 @@ export function PlanPrintPage() {
   const travelDays = legs.reduce((s, l) => s + (l.index > 0 ? l.leg.travelDays : 0), 0);
   const stayDays = legs.reduce((s, l) => s + l.leg.days, 0);
   const estTotal = data.entries.filter(isPlanned).reduce((s, e) => s + (e.cost ?? 0), 0);
-  const located = legs.filter((l) => l.leg.lat != null);
-  const labels = { days: 'Day by day', stops: 'Stops', map: 'Map', costs: 'Costs', notes: 'Notes' } as const;
+  const labels = { days: 'Day by day', stops: 'Stops', costs: 'Costs', notes: 'Notes' } as const;
 
   return (
     <div className="print-wrap">
@@ -54,9 +64,33 @@ export function PlanPrintPage() {
             </button>
           ))}
         </div>
-        <button className="btn btn--primary" onClick={() => window.print()}><Icon name="download" size={18} /> Save as PDF</button>
+        <button
+          className="btn btn--primary"
+          disabled={busy}
+          onClick={() => {
+            // Build the file right away (inside the tap) so iPhone allows the Share sheet to open.
+            if (!pdf.current) {
+              toast('Still getting the PDF ready — tap again in a second.');
+              return;
+            }
+            let blob: Blob;
+            try {
+              blob = pdf.current.buildPlanPdf(data, opts);
+            } catch (e) {
+              toast(`Couldn’t create the PDF: ${(e as Error).message}`);
+              return;
+            }
+            const name = `${trip.title.replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'trip'}-plan.pdf`;
+            setBusy(true);
+            shareOrDownload([{ blob, name }], `${trip.title} – trip plan`)
+              .then((r) => r === 'downloaded' && toast('PDF saved'))
+              .finally(() => setBusy(false));
+          }}
+        >
+          <Icon name="download" size={18} /> {busy ? 'Preparing…' : 'Save as PDF'}
+        </button>
         <p className="print-hint small muted">
-          On iPhone/iPad: tap <strong>Save as PDF</strong>, then in the print screen tap Share → <em>Save to Files</em>.
+          On iPhone/iPad the Share sheet opens: choose <em>Save to Files</em>, AirDrop, Mail or Messages.
         </p>
       </div>
 
@@ -156,16 +190,6 @@ export function PlanPrintPage() {
           </table>
         )}
 
-        {opts.map && located.length > 0 && (
-          <section className="paper__map">
-            <TripMap
-              entries={legsAsEntries(located)}
-              className="map--print"
-              interactive={false}
-              colorFor={(e) => legs.find((l) => l.leg.id === e.id)?.color ?? '#777'}
-            />
-          </section>
-        )}
 
         {opts.days && schedule.days.length > 0 && (
           <section className="pplan__days">

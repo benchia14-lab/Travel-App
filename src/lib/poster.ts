@@ -460,7 +460,7 @@ export function canvasBlob(c: HTMLCanvasElement): Promise<Blob> {
 }
 
 export async function shareOrDownload(blobs: { blob: Blob; name: string }[], title: string) {
-  const files = blobs.map((b) => new File([b.blob], b.name, { type: 'image/png' }));
+  const files = blobs.map((b) => new File([b.blob], b.name, { type: b.blob.type || 'image/png' }));
   const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
   if (nav.canShare?.({ files })) {
     try {

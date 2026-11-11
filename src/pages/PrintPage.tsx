@@ -9,11 +9,13 @@ import { TripMap } from '../components/TripMap';
 import { Stars } from '../components/Stars';
 import { Icon } from '../components/Icon';
 import { Logo } from '../components/Layout';
+import { useToast } from '../components/Toast';
 
 export function PrintPage() {
   const { id } = useParams();
   const data = useTripData(id);
   const [opts, setOpts] = useState({ photos: true, costs: true, map: true, notes: true });
+  const toast = useToast();
 
   const days = useMemo(() => {
     const map = new Map<string, Entry[]>();
@@ -39,7 +41,20 @@ export function PrintPage() {
             </button>
           ))}
         </div>
-        <button className="btn btn--primary" onClick={() => window.print()}><Icon name="print" size={18} /> Print / Save PDF</button>
+        <button
+          className="btn btn--primary"
+          onClick={() => {
+            // iOS switches printing off for apps opened from the home screen; window.print() silently does nothing there.
+            const standalone = (navigator as Navigator & { standalone?: boolean }).standalone || matchMedia('(display-mode: standalone)').matches;
+            if (standalone && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+              toast('iPhone can’t print from home-screen apps. Open this page in Safari to print or save the journal as a PDF.');
+              return;
+            }
+            window.print();
+          }}
+        >
+          <Icon name="print" size={18} /> Print / Save PDF
+        </button>
       </div>
 
       <article className="paper">
